@@ -1,0 +1,36 @@
+{
+  "__version__": "1.0.6",
+  "general": {
+    "designResolution": {
+      "width": 393,
+      "height": 852
+    }
+  },
+  "physics": {
+    "allowSleep": false,
+    "gravity": {
+      "y": -100
+    },
+    "autoSimulation": true,
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "COIN"
+      },
+      {
+        "index": 2,
+        "name": "OBSTRACLE"
+      },
+      {
+        "index": 3,
+        "name": "PLAYER"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 7,
+      "1": 9,
+      "2": 9,
+      "3": 14
+    }
+  }
+}
