@@ -1,4 +1,4 @@
-import { _decorator, Canvas, CCFloat, CCInteger, Component, find, instantiate, JsonAsset, Node, Prefab, randomRange, randomRangeInt, RigidBody2D, Vec2, Vec3 } from 'cc';
+import { _decorator, Canvas, CCFloat, CCInteger, Component, find, instantiate, JsonAsset, log, Node, Prefab, randomRange, randomRangeInt, RigidBody2D, Vec2, Vec3 } from 'cc';
 import { GameController } from './GameController';
 import { GameState } from '../GameState';
 const { ccclass, property } = _decorator;
@@ -36,10 +36,12 @@ export class SpawnController extends Component {
 
     }
 
+
+
     update(deltaTime: number) {
-
+        if (GameController.Instance.IsFallByGravity === false) return;
         if (GameController.Instance.isGameOver || GameController.Instance.state == GameState.NotStart) return;
-
+        log("spawn : " + GameController.Instance.IsFallByGravity.toString())
         this.coinSpawnTime -= deltaTime;
         this.boomSpawnTime -= deltaTime;
 

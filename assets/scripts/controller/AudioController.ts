@@ -57,7 +57,7 @@ export class AudioController extends Component {
     public playCollectedCoin() {
         this.playerSfx(this.coinCollectedClip);
     }
-    public playTap(){
+    public playTap() {
         this.playerSfx(this.tapClip);
     }
 
@@ -68,5 +68,4 @@ export class AudioController extends Component {
 
 
 }
-
 

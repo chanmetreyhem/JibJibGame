@@ -5,3 +5,9 @@ export enum GameState {
     Paused,
     Ended
 }
+
+export enum GameMode {
+    Default,
+    Swipe,
+    Drag
+}

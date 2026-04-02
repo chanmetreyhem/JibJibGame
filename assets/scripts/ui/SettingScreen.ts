@@ -1,6 +1,8 @@
-import { _decorator, Button, Component, director, easing, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, Button, Color, Component, director, easing, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { Setting } from '../utils/Setting';
 import { AudioController } from '../controller/AudioController';
+import { GameMode } from '../GameState';
+import { GameController } from '../controller/GameController';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingScreen')
@@ -14,6 +16,19 @@ export class SettingScreen extends Component {
 
     @property(SpriteFrame) muteFrame: SpriteFrame;
     @property(SpriteFrame) unMuteFrame: SpriteFrame
+
+    @property(SpriteFrame) usedButtonSpriteFrame: SpriteFrame;
+    @property(SpriteFrame) defaultButtonSpriteFrame: SpriteFrame
+
+    @property(Color) usedColor: Color = null;
+    @property(Color) defaultColor: Color = null;
+
+    @property(Button) defaultButton: Button;
+    @property(Button) swipeButton: Button;
+    @property(Button) dragButton: Button;
+    @property(Button) physicButton: Button;
+    @property(Button) speedButton: Button;
+
 
     private isMuteMusic: boolean = false;
     private isMuteSfx: boolean = false;
@@ -31,6 +46,19 @@ export class SettingScreen extends Component {
 
         AudioController.Instance.muteMusic(this.isMuteMusic);
         AudioController.Instance.muteSfx(this.isMuteSfx);
+
+        switch (GameController.Instance.gameMode) {
+            case GameMode.Swipe:
+                this.onSwipeButtonClick();
+                break;
+            case GameMode.Drag:
+                this.onDragButtonClick();
+                break;
+            default: this.onDefaultButtonClick();
+                break;
+        }
+
+        GameController.Instance.IsFallByGravity ? this.onPhysicButtonClick() : this.onSpeedButtonClick();
     }
 
 
@@ -86,6 +114,48 @@ export class SettingScreen extends Component {
 
         });
 
+    }
+
+
+    onDefaultButtonClick() {
+        GameController.Instance.gameMode = GameMode.Default;
+
+        this.updateButton(this.defaultButton, true);
+        this.updateButton(this.swipeButton, false);
+        this.updateButton(this.dragButton, false);
+
+
+    }
+    onSwipeButtonClick() {
+        GameController.Instance.gameMode = GameMode.Swipe;
+        this.updateButton(this.defaultButton, false);
+        this.updateButton(this.swipeButton, true);
+        this.updateButton(this.dragButton, false);
+    }
+    onDragButtonClick() {
+        GameController.Instance.gameMode = GameMode.Drag;
+        this.updateButton(this.defaultButton, false);
+        this.updateButton(this.swipeButton, false);
+        this.updateButton(this.dragButton, true);
+    }
+
+    onPhysicButtonClick() {
+        GameController.Instance.IsFallByGravity = true;
+        this.updateButton(this.physicButton, true);
+        this.updateButton(this.speedButton, false);
+
+    }
+    onSpeedButtonClick() {
+
+        GameController.Instance.IsFallByGravity = false;
+
+        this.updateButton(this.physicButton, false);
+        this.updateButton(this.speedButton, true);
+    }
+
+    updateButton(button: Button, isUsed: boolean) {
+        button.getComponent(Sprite).spriteFrame = isUsed ? this.usedButtonSpriteFrame : this.defaultButtonSpriteFrame;
+        button.getComponentInChildren(Label).color = isUsed ? this.usedColor : this.defaultColor;
     }
 
 

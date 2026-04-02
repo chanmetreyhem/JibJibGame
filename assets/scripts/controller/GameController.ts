@@ -1,9 +1,6 @@
 import { _decorator, CCFloat, Component, director, Label, log, math, Node, PHYSICS_2D_PTM_RATIO, PhysicsSystem, PhysicsSystem2D, Vec2, instantiate, Enum, Prefab, Canvas, SpriteFrame } from 'cc';
-import { GameState } from '../GameState';
-import { GameOverScreen } from '../ui/GameOverScreen';
-import { GameScreen } from '../ui/GameScreen';
+import { GameMode, GameState } from '../GameState';
 import { PlayerController } from '../player/PlayerController';
-import { HomeScreen } from '../ui/HomeScreen';
 import { SpawnController } from './SpawnController';
 import { RuntimeUI } from '../ui/RuntimeUI';
 const { ccclass, property } = _decorator;
@@ -54,6 +51,16 @@ export class GameController extends Component {
 
     private time: number = 0;
 
+    public gameMode: GameMode = GameMode.Swipe;
+    private isFallByGravity: boolean = true;
+
+    public get IsFallByGravity(): boolean {
+        return this.isFallByGravity;
+    }
+
+    public set IsFallByGravity(value: boolean) {
+        this.isFallByGravity = value
+    }
     public onCollectedCoinChange: ((amount: number) => void) = null;
     public isGameOver: boolean = false;
 
@@ -75,7 +82,9 @@ export class GameController extends Component {
     }
 
     update(deltaTime: number) {
-
+        if (this.isFallByGravity == false) {
+            log("false")
+        }
         if (this.state == GameState.NotStart) return;
         if (this.time <= 0 || this.isGameOver) return;
 
@@ -88,10 +97,7 @@ export class GameController extends Component {
             this.setUpGravity(currentGravity);
 
             if (this.time <= 0) {
-
-
                 this.gameOver();
-
             }
         }
 
@@ -107,11 +113,6 @@ export class GameController extends Component {
 
         log("Start Game");
         this.ui.gameScreen.node.active = true;
-
-        // if (this.playerInstance != null) {
-        //     this.playerInstance.destroy();
-        //     this.playerInstance = null;
-        // }
 
         this.time = this.gameTime;
         PhysicsSystem2D.instance.enable = true;

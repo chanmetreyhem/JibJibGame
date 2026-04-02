@@ -1,4 +1,4 @@
-import { _decorator, CCFloat, CCInteger, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, CCFloat, CCInteger, Component, instantiate, log, Node, Prefab } from 'cc';
 import { GameState } from '../GameState';
 import { GameController } from '../controller/GameController';
 const { ccclass, property } = _decorator;
@@ -17,8 +17,10 @@ export class LevelGenerator extends Component {
     }
 
     update(deltaTime: number) {
-        if (GameController.Instance.isGameOver || GameController.Instance.state == GameState.NotStart) return;
 
+        if (GameController.Instance.IsFallByGravity === true) return;
+        if (GameController.Instance.isGameOver || GameController.Instance.state == GameState.NotStart) return;
+        log("level : " + GameController.Instance.IsFallByGravity.toString())
         this.time -= deltaTime;
         if (this.time < 0) {
             this.spawnLevel();
