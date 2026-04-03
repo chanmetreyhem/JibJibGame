@@ -47,7 +47,7 @@ export class SettingScreen extends Component {
         AudioController.Instance.muteMusic(this.isMuteMusic);
         AudioController.Instance.muteSfx(this.isMuteSfx);
 
-        switch (GameController.Instance.gameMode) {
+        switch (GameController.Instance.GameMode) {
             case GameMode.Swipe:
                 this.onSwipeButtonClick();
                 break;
@@ -118,7 +118,7 @@ export class SettingScreen extends Component {
 
 
     onDefaultButtonClick() {
-        GameController.Instance.gameMode = GameMode.Default;
+        GameController.Instance.GameMode = GameMode.Default;
 
         this.updateButton(this.defaultButton, true);
         this.updateButton(this.swipeButton, false);
@@ -127,13 +127,13 @@ export class SettingScreen extends Component {
 
     }
     onSwipeButtonClick() {
-        GameController.Instance.gameMode = GameMode.Swipe;
+        GameController.Instance.GameMode = GameMode.Swipe;
         this.updateButton(this.defaultButton, false);
         this.updateButton(this.swipeButton, true);
         this.updateButton(this.dragButton, false);
     }
     onDragButtonClick() {
-        GameController.Instance.gameMode = GameMode.Drag;
+        GameController.Instance.GameMode = GameMode.Drag;
         this.updateButton(this.defaultButton, false);
         this.updateButton(this.swipeButton, false);
         this.updateButton(this.dragButton, true);

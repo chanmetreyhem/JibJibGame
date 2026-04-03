@@ -7,7 +7,8 @@ export enum GameState {
 }
 
 export enum GameMode {
-    Default,
-    Swipe,
-    Drag
+    Default = "Default",
+    Swipe = "Swipe",
+    Drag = "Drag"
 }
+

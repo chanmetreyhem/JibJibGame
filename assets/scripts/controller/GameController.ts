@@ -37,29 +37,52 @@ export class GameController extends Component {
 
     @property(SpriteFrame) defaultBirdSpriteFrame: SpriteFrame;
     @property(SpriteFrame) public birdSpriteFrame: SpriteFrame = null;
-
     @property(Node) private playerInstance: Node = null;
+
     private colletedCoin: number = 0;
     private initializeCoin: number = 100;
 
     public get UserCoin(): number {
+        this.initializeCoin = localStorage.getItem(this.COIN) ? Number(localStorage.getItem(this.COIN)) : 100;
         return this.initializeCoin;
     }
     public set UserCoin(value: number) {
         this.initializeCoin = value;
+        localStorage.setItem(this.COIN, this.initializeCoin.toString());
     }
 
     private time: number = 0;
 
-    public gameMode: GameMode = GameMode.Swipe;
-    private isFallByGravity: boolean = true;
+    private gameMode: GameMode = GameMode.Swipe;
+    public get GameMode(): GameMode {
+        this.gameMode = this.toGameMode(localStorage.getItem(this.GAME_MODE))
+        return this.gameMode;
+    }
+    public set GameMode(value: GameMode) {
+        this.gameMode = value;
+        localStorage.setItem(this.GAME_MODE, this.gameMode.toString())
+    }
+
+
+    toGameMode(str: string): GameMode | undefined {
+        return GameMode[str as keyof typeof GameMode];
+    }
+
+
+    private isFallByGravity: boolean = false;
+
+    readonly GAME_MODE: string = "GAME_MODE";
+    readonly IS_USE_GRAVITY_FALL = "IS_USE_GRAVITY_FALL";
+    readonly COIN: string = "COIN";
 
     public get IsFallByGravity(): boolean {
+        this.isFallByGravity = localStorage.getItem(this.IS_USE_GRAVITY_FALL) === "true";
         return this.isFallByGravity;
     }
 
     public set IsFallByGravity(value: boolean) {
         this.isFallByGravity = value
+        localStorage.setItem(this.IS_USE_GRAVITY_FALL, this.isFallByGravity.toString())
     }
     public onCollectedCoinChange: ((amount: number) => void) = null;
     public isGameOver: boolean = false;
@@ -77,14 +100,12 @@ export class GameController extends Component {
 
     start() {
 
-        this.ui.homeScreen.setUp(this.initializeCoin);
+        this.ui.homeScreen.setUp(this.UserCoin);
 
     }
 
     update(deltaTime: number) {
-        if (this.isFallByGravity == false) {
-            log("false")
-        }
+
         if (this.state == GameState.NotStart) return;
         if (this.time <= 0 || this.isGameOver) return;
 
@@ -115,7 +136,9 @@ export class GameController extends Component {
         this.ui.gameScreen.node.active = true;
 
         this.time = this.gameTime;
+
         PhysicsSystem2D.instance.enable = true;
+
         this.setUpGravity(this.minGravity);
 
 
@@ -135,7 +158,7 @@ export class GameController extends Component {
         const playerController = this.playerInstance.getComponent(PlayerController);
         playerController.setUp(this.ui.gameScreen, this.birdSpriteFrame != null ? this.birdSpriteFrame : this.defaultBirdSpriteFrame);
 
-        this.ui.gameScreen.setUp(this.initializeCoin);
+        this.ui.gameScreen.setUp(this.UserCoin);
 
     }
 
@@ -160,7 +183,7 @@ export class GameController extends Component {
     }
 
     claimCoin() {
-        this.initializeCoin += this.colletedCoin;
+        this.UserCoin += this.colletedCoin;
         this.colletedCoin = 0;
         this.updateUI();
     }
@@ -170,7 +193,7 @@ export class GameController extends Component {
     }
 
     private updateUI() {
-        this.ui.updateCoinLabel(this.initializeCoin);
+        this.ui.updateCoinLabel(this.UserCoin);
     }
 }
 
